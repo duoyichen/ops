@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}添加IP段{% endblock %}
+
+{% block css %}
+
+<!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'plugins/datatables/dataTables.bootstrap.css' %}">
+{#  <link rel="stylesheet" href="{% static 'plugins/datepicker/datepicker3.css' %}">#}
+{#  <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}">#}
+{#  <link rel="stylesheet" href="{% static 'plugins/timepicker/bootstrap-timepicker.css' %}">#}
+  <link rel="stylesheet" href="{% static 'plugins/datetimepicker/css/bootstrap-datetimepicker.css' %}">
+
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/AdminLTE.min.css' %}">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="{% static 'dist/css/skins/_all-skins.min.css' %}">
+
+{% endblock %}
+
+{% block content %}
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        添加IP段
+        <small>create ip asset</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
+        <li class="active">添加IP段</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+    <div class="row">
+    <div class="col-xs-12">
+
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">添加IP段<small>(ip)</small></h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+
+            <div class="card card-warning">
+              <div class="card-header">
+                <h3 class="card-title">编辑页面</h3>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <form role="form" action="/assets/add_ip_asset/" method="post" novalidate>
+                    {% csrf_token %}
+                  <!-- text input -->
+                  <div class="form-group">
+                      {{ obj.sn.label }}
+                      {{ obj.sn }}
+                      <p class="text-red">{{ obj.errors.sn.0 }}</p>
+                  </div>
+                  <div class="form-group">
+                      {{ obj.name.label }}
+                      {{ obj.name }}
+                      <p class="text-red">{{ obj.errors.name.0 }}</p>
+                  </div>
+                  <div class="form-group">
+                      {{ obj.netmask.label }}
+                      {{ obj.netmask }}
+                      <p class="text-red">{{ obj.errors.netmask.0 }}</p>
+                  </div>
+                  <div class="form-group">
+                      {{ obj.first_ip.label }}{{ obj.first_ip}}
+                      <p class="text-red">{{ obj.errors.first_ip.0 }}</p>
+                  </div>
+                  <div class="form-group">
+                      {{ obj.end_ip.label }}{{ obj.end_ip }}
+                      <p class="text-red">{{ obj.errors.end_ip.0 }}</p>
+                  </div>
+{#                    <div class="form-group">#}
+{#                          {{ obj.c_time.label }}#}
+{#                            <div class="input-group-prepend">#}
+{#                              <span class="input-group-text"><i class="fa fa-clock-o"></i></span>#}
+{#                            </div>#}
+{#                        {{ obj.c_time }}#}
+{#                        <p class="text-red">{{ obj.errors.c_time.0 }}</p>#}
+{#                    </div>#}
+{#                    <div class="form-group">#}
+{#                          {{ obj.m_time.label }}#}
+{#                            <div class="input-group-prepend">#}
+{#                              <span class="input-group-text"><i class="fa fa-clock-o"></i></span>#}
+{#                            </div>#}
+{#                        {{ obj.m_time }}#}
+{#                        <p class="text-red">{{ obj.errors.m_time.0 }}</p>#}
+{#                    </div>#}
+                    <div class="form-group">
+                          {{ obj.admin.label }}
+                        {{ obj.admin }}
+                        <p class="text-red">{{ obj.errors.admin.0 }}</p>
+                    </div>
+                    <div class="form-group">
+                          {{ obj.approved_by.label }}
+                        {{ obj.approved_by }}
+                        <p class="text-red">{{ obj.errors.approved_by.0 }}</p>
+                    </div>
+                    <div class="form-group">
+                          {{ obj.idc.label }}
+                        {{ obj.idc }}
+                        <p class="text-red">{{ obj.errors.idc.0 }}</p>
+                    </div>
+                    <div class="form-group">
+                          {{ obj.manufacturer.label }}
+                        {{ obj.manufacturer }}
+                        <p class="text-red">{{ obj.errors.ianufacturer.0 }}</p>
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="提交" />
+                    </div>
+
+                </form>
+              </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+    <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    </section>
+
+{% endblock %}
+
+{% block script %}
+    <!-- DataTables -->
+    <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+
+{#    <script src="{% static 'plugins/moment/moment.js' %}"></script>#}
+{#    <script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>#}
+{#    <script src="{% static 'plugins/datepicker/bootstrap-datepicker.js' %}"></script>#}
+{#    <script src="{% static 'plugins/timepicker/bootstrap-timepicker.js' %}"></script>#}
+    <script src="{% static 'plugins/datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+    <script src="{% static 'plugins/datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+
+    <!-- AdminLTE App -->
+    <script src="{% static 'dist/js/app.min.js' %}"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="{% static 'dist/js/demo.js' %}"></script>
+    <!-- page script -->
+    <script>
+      $(function () {
+        $('#assets_table').DataTable({
+          "paging": true,       <!-- 允许分页 -->
+          "lengthChange": true, <!-- 允许改变每页显示的行数 -->
+          "searching": true,    <!-- 允许内容搜索 -->
+          "ordering": true,     <!-- 允许排序 -->
+          "info": true,         <!-- 显示信息 -->
+          "autoWidth": false    <!-- 固定宽度 -->
+        });
+      });
+    </script>
+
+    <script>
+      $(function () {
+        //Date Time picker
+        $('#c_time').datetimepicker({
+            format: "yyyy-mm-dd hh:ii:ss",
+            autoclose: true,
+            todayBtn: true,
+            startDate: "2014-06-22 10:00",
+            minuteStep: 10,
+            language: 'zh-CN',
+            todayHighlight: true,
+            minuteStep: 1
+        })
+      })
+    </script>
+
+{#    <script>#}
+{#      $(function () {#}
+{#        //Date Time picker#}
+{#        $('#m_time').datetimepicker({#}
+{#            format: "yyyy-mm-dd hh:ii:ss",#}
+{#            autoclose: true,#}
+{#            todayBtn: true,#}
+{#            startDate: "2014-06-22 10:00",#}
+{#            minuteStep: 10,#}
+{#            language: 'zh-CN',#}
+{#            todayHighlight: true,#}
+{#            minuteStep: 1#}
+{#        })#}
+{#      })#}
+{#    </script>#}
+
+
+{% endblock %}
