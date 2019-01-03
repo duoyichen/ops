@@ -18,7 +18,7 @@ def idc(request):
 
 def network_asset(request):
     #network_list = models.Network_asset.objects.all().values('id','sub_asset_type','model','asset__hostname','asset__manage_ip','asset__admin__username','asset__idc__name','asset__manufacturer__name','asset__m_time')
-    network_obj = models.Network_asset.objects.all()
+    network_obj = models.Network_Asset.objects.all()
     # # print(network_list)
     # # print(type(network_list))
     # print(network_obj)
@@ -39,74 +39,93 @@ def ip_asset(request):
     # print(ips_obj)
     return render(request,"assets/ip_asset.html",locals())
 
+def ip_asset_detail(request):
+    if request.method == 'GET':
+        id = request.GET.get('id')
+        ips_obj = models.IP_Asset.objects.filter(id=id)
+        print(ips_obj[0].id)
+        ip_obj = models.IP.objects.filter(ip_asset=ips_obj[0].id)
+        print(ip_obj)
+        has_ip_flag = 1
+        if ip_obj.__len__() == 0:
+            has_ip_flag = 0
+        return render(request, 'assets/ip_asset_detail.html', locals())
+
 from django import forms
 from django.forms import fields,widgets
 from django.forms.models import ModelChoiceField
 
 class ip_asset_form(forms.Form):
-    sn = fields.CharField(
+    name = fields.CharField(
         required=True,
-        min_length=8,
-        max_length=32,
+        max_length=64,
         widget=widgets.TextInput(attrs={'class': 'form-control'}),
         #error_messages={},
-        label='序列号',
-        # initial='请输入 8 到 32 位序列号',
+        label='名称（网络号）：',
     )
-    name = fields.GenericIPAddressField(
+    asset_code = fields.CharField(
         required=True,
+        max_length=64,
         widget=widgets.TextInput(attrs={'class': 'form-control'}),
         #error_messages={},
-        label='网络号',
-        # initial='请输入网络号',
+        label='资产编码：',
     )
     netmask = fields.GenericIPAddressField(
         required=True,
         widget=widgets.TextInput(attrs={'class': 'form-control'}),
         #error_messages={},
-        label='掩码',
+        label='掩码：',
         # initial='请输入掩码',
     )
     first_ip = fields.GenericIPAddressField(
         required=True,
         widget=widgets.TextInput(attrs={'class': 'form-control'}),
         #error_messages={},
-        label='开始IP',
+        label='开始IP：',
         # initial='请输入开始IP',
     )
     end_ip = fields.GenericIPAddressField(
         required=True,
         widget=widgets.TextInput(attrs={'class': 'form-control'}),
         #error_messages={},
-        label='结束IP',
+        label='结束IP：',
         # initial='请输入结束IP',
     )
-
+    manufacturer = ModelChoiceField(
+        queryset=models.Manufacturer.objects.all(),
+        widget=widgets.Select(attrs={'class':'form-control'}),
+        label='运营商：',
+        initial=1
+    )
+    # status = ModelChoiceField(
+    #     queryset=dict(models.Asset.asset_status),
+    #     widget=widgets.Select(attrs={'class':'form-control'}),
+    #     label='状态：',
+    #     initial=0
+    # )
+    tag = ModelChoiceField(
+        queryset=models.Tag.objects.all(),
+        widget=widgets.Select(attrs={'class':'form-control'}),
+        label='标签',
+        initial=0
+    )
+    idc = ModelChoiceField(
+        queryset=models.IDC.objects.all(),
+        widget=widgets.Select(attrs={'class':'form-control'}),
+        label='所属机房',
+        initial=0
+    )
+    comments = fields.TextInput()
     admin = ModelChoiceField(
         queryset=models.User.objects.all(),
         widget=widgets.Select(attrs={'class': 'form-control'}),
-        label='管理者',
-        initial=2,
+        label='管理人',
+        initial=1,
     )
-
     approved_by = ModelChoiceField(
         queryset=models.User.objects.all(),
         widget=widgets.Select(attrs={'class': 'form-control'}),
         label='审批者',
-        initial=1,
-    )
-
-    idc = ModelChoiceField(
-        queryset=models.IDC.objects.all(),
-        widget=widgets.Select(attrs={'class': 'form-control'}),
-        label='所属机房',
-        initial=2,
-    )
-
-    manufacturer = ModelChoiceField(
-        queryset=models.Manufacturer.objects.all(),
-        widget=widgets.Select(attrs={'class': 'form-control'}),
-        label='运营商',
         initial=1,
     )
 
@@ -117,7 +136,8 @@ def add_ip_asset(request):
     else:
         obj = ip_asset_form(request.POST)
         if obj.is_valid():
-            models.IP_Asset.objects.create(**obj.cleaned_data)
+            models.Asset.objects.create(asset_type=2)
+            models.IP_Asset.objects.create(**obj.cleaned_data[''])
             ips_obj = models.IP_Asset.objects.filter(name=obj.cleaned_data['name'])
             # print(ips_obj,type(ips_obj))
             # return redirect(request, '/assets/ip_asset/')
@@ -135,18 +155,6 @@ def del_ip_asset(request):
         # print(id)
         models.IP_Asset.objects.filter(id=id).delete()
         return redirect('/assets/ip_asset/')
-
-def ip_asset_detail(request):
-    if request.method == 'GET':
-        id = request.GET.get('id')
-        ips_obj = models.IP_Asset.objects.filter(id=id)
-        print(ips_obj[0].id)
-        ip_obj = models.IP.objects.filter(ip_asset=ips_obj[0].id)
-        print(ip_obj)
-        has_ip_flag = 1
-        if ip_obj.__len__() == 0:
-            has_ip_flag = 0
-        return render(request, 'assets/ip_asset_detail.html', locals())
 
 def ip(request):
     if request.method == 'GET':
@@ -166,17 +174,15 @@ def num2ip(num):
     return '%s.%s.%s.%s' % (ip_add2[0], ip_add2[1], ip_add2[2], ip_add2[3])
 
 def add_ip(request):
-
     id = request.GET.get('id')
     print(id)
     ips_obj = models.IP_Asset.objects.filter(id=id)
     first_ip = ips_obj[0].first_ip
     end_ip = ips_obj[0].end_ip
-    name = ips_obj[0].name
     ip_asset = ips_obj[0].id
     status = 0
     customer = ''
-    memo = '新添加ip'
+    comment = '新添加ip'
     num1 = ip2num(first_ip)
     num2 = ip2num(end_ip)
     for i in range(num1, num2 + 1):
@@ -186,7 +192,7 @@ def add_ip(request):
                 ip=num2ip(i),
                 status=status,
                 customer=customer,
-                memo=memo,
+                comment=comment,
                 ip_asset_id=id
             )
         except Exception as e:
@@ -195,3 +201,149 @@ def add_ip(request):
     # return render(request,'assets/ip_asset_detail.html',locals())
     # return HttpResponse("ok")
     return redirect('/assets/ip/')
+
+
+# @csrf_exempt
+# def report(request):
+#     if request.method == "POST":
+#         asset_data = request.POST.get('asset_data')
+#         print(type(asset_data))
+#         print(asset_data)
+#         # for k,v in asset_data:
+#         #     print(k,v)
+#         return HttpResponse("成功收到数据！")
+
+import json
+from . import asset_handler
+@csrf_exempt
+def report(request):
+    """
+    通过csrf_exempt装饰器，跳过Django的csrf安全机制，让post的数据能被接收，但这又会带来新的安全问题。
+    可以在客户端，使用自定义的认证token，进行身份验证。这部分工作，请根据实际情况，自己进行。
+    :param request:
+    :return:
+    """
+    if request.method == "POST":
+        asset_data = request.POST.get('asset_data')
+        data = json.loads(asset_data)
+        # 各种数据检查，请自行添加和完善！
+        if not data:
+            return HttpResponse("没有数据！")
+        if not issubclass(dict, type(data)):
+            return HttpResponse("数据必须为字典格式！")
+        # 是否携带了关键的sn号
+        sn = data.get('sn', None)
+        if sn:
+            # 进入审批流程
+            # 首先判断是否在上线资产中存在该sn
+            asset_obj = models.Asset.objects.filter(server_asset__sn=sn)
+            if asset_obj:
+                # 进入已上线资产的数据更新流程
+                update_asset = asset_handler.UpdateAsset(request, asset_obj[0], data)
+                return HttpResponse("资产数据已经更新！")
+            else:   # 如果已上线资产中没有，那么说明是未批准资产，进入新资产待审批区，更新或者创建资产。
+                obj = asset_handler.NewAsset(request, data)
+                response = obj.add_to_new_assets_zone()
+                return HttpResponse(response)
+        else:
+            return HttpResponse("没有资产sn序列号，请检查数据！")
+
+
+
+
+class emp_form(forms.Form):
+    id = fields.IntegerField(
+        label='员工ID：',
+        widget=widgets.TextInput(attrs={'class': 'form-control'}),
+    )
+    name = fields.CharField(
+        max_length=32,
+        widget=widgets.TextInput(attrs={'class':'form-control'}),
+        label='姓名：',
+    )
+    depart = ModelChoiceField(
+        queryset=models.depart.objects.all(),
+        widget=widgets.Select(attrs={'class':'form-control'}),
+        label='部门：',
+    )
+    m_time = fields.DateTimeField(
+        label='修改时间：',
+        widget=widgets.DateTimeInput(attrs={'class': 'form-control'}),
+    )
+
+class depart_form(forms.Form):
+    name = fields.CharField(
+        max_length=32,
+        label='部门名称：',
+    )
+
+def add_employee(request):
+    if request.method == 'GET':
+        obj = emp_form()
+        return render(request,'assets/employee.html',locals())
+    else:
+        obj = emp_form(request.POST)
+        if obj.is_valid():
+            models.empployee.objects.create(**obj.cleaned_data)
+            return HttpResponse('员工添加成功！')
+        else:
+            return render(request,'assets/employee.html',locals())
+
+
+from django.forms.models import model_to_dict
+
+def edit_employee(request,emp_id,*args,**kwargs):
+    if request.method == 'GET':
+        emp_obj = models.empployee.objects.all().filter(id=emp_id).values('id','name','depart','m_time')
+        # emp_obj = emp_obj0[0]
+        # # emp_obj['name'] = emp_obj0[0].name
+        # # emp_obj['depart'] = emp_obj0[0].depart
+        # # emp_obj = models.empployee.objects.all().filter(id=emp_id)
+        # print(emp_obj,type(emp_obj))
+        # emp_dic = {}
+        # emp_dic['id'] = emp_obj.[0]
+        # emp_obj = model_to_dict(emp_obj0)
+        # print(emp_obj0,type(emp_obj0))
+        # emp_obj = dict(emp_obj0)
+        # print(type(emp_obj))
+        # for k,v in emp_obj.items():
+        #     print(k,v)
+        # print(emp_obj,type(emp_obj))
+        # values = {'name': 'root', 'depart': 2}
+        # print(values,type(values))
+        obj = emp_form(emp_obj[0])
+        # print(obj.id)
+        # print(obj,type(obj))
+        return render(request,'assets/edit_employee.html',locals())
+        # return redirect('/assets/')
+        # return HttpResponse(emp_id)
+    else:
+        obj = emp_form(request.POST)
+        if obj.is_valid():
+            # print(obj.cleaned_data['name'])
+            # print(obj.cleaned_data[name])
+            import datetime
+            models.empployee.objects.filter(id=emp_id).update(
+                name=obj.cleaned_data['name'],
+                depart=obj.cleaned_data['depart'],
+                m_time=datetime.datetime.now()
+            )
+            return redirect('/assets/employee/')
+        return render(request,'assets/edit_employee.html',locals())
+
+
+def add_depart(request):
+    if request.method == 'GET':
+        obj = depart_form()
+        return render(request,'assets/depart.html',locals())
+    else:
+        obj = depart_form(request.POST)
+        if obj.is_valid():
+            models.depart.objects.create(**obj.cleaned_data)
+            return HttpResponse("部门添加成功")
+        else:
+            return render(request,'assets/depart.html',locals())
+
+def employee(request):
+    obj = models.empployee.objects.all().values('id','name','depart__name','m_time')
+    return render(request,'assets/employee.html',locals())

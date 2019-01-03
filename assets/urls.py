@@ -5,7 +5,7 @@ from  assets import views
 app_name = 'assets'
 
 urlpatterns = [
-    # path('', views.index),
+    path('', views.index),
     path('index/', views.index),
     path('idc/', views.idc),
     path('network_asset/', views.network_asset),
@@ -16,4 +16,12 @@ urlpatterns = [
     path('del_ip_asset.html', views.del_ip_asset),
     path('ip_asset_detail.html', views.ip_asset_detail),
     path('add_ip.html', views.add_ip),
+    path('report/', views.report, name='report'),
+
+    path('employee/', views.employee),
+    path('add_employee/', views.add_employee),
+    path('edit_employee/', views.edit_employee),
+    path('edit_employee/<int:emp_id>/', views.edit_employee),
+    path('depart/', views.add_depart),
+    path('add_depart/', views.add_depart),
 ]

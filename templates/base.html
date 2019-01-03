@@ -111,9 +111,10 @@
       </form>
       <!-- /.search form -->
       <!-- sidebar menu: : style can be found in sidebar.less -->
+{#      <ul class="sidebar-menu" data-widget="tree">#}
       <ul class="sidebar-menu">
         <li class="header">导航栏</li>
-        <li class="active treeview">
+        <li class="treeview">
           <a href="/assets/index/">
             <i class="fa fa-dashboard"></i> <span>仪表盘</span>
             <span class="pull-right-container">
@@ -121,53 +122,48 @@
             </span>
           </a>
         </li>
-        <li class="treeview">
-          <a href="/assets/index/">
-            <i class="fa fa-table"></i> <span>资产总表</span>
+        <li class="active treeview">
+          <a href="#">
+            <i class="fa fa-table"></i> <span>资产管理</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
+{#            <ul class="treeview-menu" style="display: block;">#}
+            <ul class="treeview-menu">
+                <li><a href="/assets/index/"><i class="fa fa-circle-o"></i>资产总表</a></li>
+                <li><a href="/assets/idc/"><i class="fa fa-circle-o"></i>机房表</a></li>
+                <li><a href="/assets/network_asset/"><i class="fa fa-circle-o"></i>网络设备表</a></li>
+                <li><a href="/assets/server_asset/"><i class="fa fa-circle-o"></i>服务器表</a></li>
+                <li><a href="/assets/ip_asset/"><i class="fa fa-circle-o"></i>IP段表</a></li>
+                <li><a href="/assets/ip/"><i class="fa fa-circle-o"></i>IP表</a></li>
+            </ul>
         </li>
         <li class="treeview">
-          <a href="/assets/idc/">
-            <i class="fa fa-table"></i> <span>机房表</span>
+          <a href="#">
+            <i class="fa fa-table"></i> <span>监控报警<small>(开发中...)</small></span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
+            <ul class="treeview-menu">
+                <li><a href="#"><i class="fa fa-circle-o"></i>监控界面一</a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i>监控界面二</a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i>监控界面三</a></li>
+            </ul>
         </li>
         <li class="treeview">
-          <a href="/assets/network_asset/">
-            <i class="fa fa-table"></i> <span>网络设备表</span>
+          <a href="#">
+            <i class="fa fa-table"></i> <span>运维工具<small>(开发中...)</small></span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
           </a>
-        </li>
-        <li class="treeview">
-          <a href="/assets/server_asset/">
-            <i class="fa fa-table"></i> <span>服务器表</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="/assets/ip_asset/">
-            <i class="fa fa-table"></i> <span>IP段表</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-        </li>
-        <li class="treeview">
-          <a href="/assets/ip/">
-            <i class="fa fa-table"></i> <span>IP表</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
+            <ul class="treeview-menu">
+                <li><a href="#"><i class="fa fa-circle-o"></i>自动化</a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i>堡垒机</a></li>
+                <li><a href="#"><i class="fa fa-circle-o"></i>常用脚本</a></li>
+            </ul>
         </li>
       </ul>
     </section>

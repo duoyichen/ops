@@ -42,20 +42,18 @@
           <table id="assets_table" class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                  <th>序号</th>
                   <th>IP地址</th>
                   <th>所属IP段</th>
                   <th>使用状态</th>
-                  <th>使用者</th>
+                  <th>使用人</th>
                   <th>操作</th>
                 </tr>
             </thead>
             <tbody>
                 {% for i in ip_obj %}
                     <tr>
-                        <td>{{ i.id }}</td>
                         <td>{{ i.ip }}</td>
-                        <td>{{ i.ip_asset.name }}</td>
+                        <td>{{ i.ip_asset.asset.name }}</td>
                         <td>{{ i.get_status_display }}</td>
                         <td>{{ i.customer }}</td>
                         <td>分配该IP</td>
@@ -67,11 +65,10 @@
             </tbody>
             <tfoot>
             <tr>
-              <th>序号</th>
               <th>IP地址</th>
               <th>所属IP段</th>
               <th>使用状态</th>
-              <th>使用者</th>
+              <th>使用人</th>
               <th>操作</th>
             </tr>
             </tfoot>

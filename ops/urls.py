@@ -21,6 +21,6 @@ from assets import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('assets/', include("assets.urls"),name='assets'),
-    # path('', include("assets.urls")),
-    path('', views.index),
+    path('', include("assets.urls")),
+    # path('', views.index),
 ]

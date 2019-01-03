@@ -47,13 +47,13 @@
           <table id="assets_table" class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                  <th>序号</th>
-                  <th>名称（IP段）</th>
+                  <th>资产编码</th>
+                  <th>IP段</th>
                   <th>掩码</th>
                   <th>开始IP</th>
                   <th>结束IP</th>
+                  <th>已分配</th>
                   <th>IP总数</th>
-                  <th>已分配IP数</th>
                   <th>所在机房</th>
                   <th>运营商</th>
                   <th>管理者</th>
@@ -63,19 +63,26 @@
             </thead>
             <tbody>
 
+{#        'asset__status',#}
+{#        'asset__c_time',#}
+{#        'asset__admin__username',#}
+{#        'asset__idc__name',#}
+{#        'asset__manufacturer__name',#}
+{#        'first_ip',#}
+{#        'end_ip'#}
                 {% for ips in ips_obj %}
                     <tr>
-                        <td>{{ ips.id }}</td>
-                        <td><a href="../ip_asset_detail.html?id={{ ips.id }}">{{ ips.name }}</a></td>
+                        <td>{{ ips.asset.asset_code }}</td>
+                        <td><a href="../ip_asset_detail.html?id={{ ips.id }}">{{ ips.asset.name }}</a></td>
                         <td>{{ ips.netmask }}</td>
                         <td>{{ ips.first_ip }}</td>
                         <td>{{ ips.end_ip }}</td>
-                        <td>254</td>
                         <td>7</td>
-                        <td>{{ ips.idc.name }}</td>
-                        <td>{{ ips.manufacturer.name }}</td>
-                        <td>{{ ips.admin.username }}</td>
-                        <td>{{ ips.m_time }}</td>
+                        <td>254</td>
+                        <td>{{ ips.asset.idc.name }}</td>
+                        <td>{{ ips.asset.manufacturer.name }}</td>
+                        <td>{{ ips.asset.admin.username }}</td>
+                        <td>{{ ips.asset.m_time | date:"y/m/d"}}</td>
                         <td><a href="../del_ip_asset.html?id={{ ips.id }}">删除</a>  编辑</td>
                     </tr>
                 {% empty %}
@@ -85,18 +92,18 @@
             </tbody>
             <tfoot>
             <tr>
-                  <th>序号</th>
-                  <th>名称（IP段）</th>
-                  <th>掩码</th>
-                  <th>开始IP</th>
-                  <th>结束IP</th>
-                  <th>IP总数</th>
-                  <th>已分配IP数</th>
-                  <th>所在机房</th>
-                  <th>运营商</th>
-                  <th>管理者</th>
-                  <th>更新时间</th>
-                  <th>操作</th>
+              <th>资产编码</th>
+              <th>IP段</th>
+              <th>掩码</th>
+              <th>开始IP</th>
+              <th>结束IP</th>
+              <th>已分配</th>
+              <th>IP总数</th>
+              <th>所在机房</th>
+              <th>运营商</th>
+              <th>管理者</th>
+              <th>更新时间</th>
+              <th>操作</th>
             </tr>
             </tfoot>
           </table>

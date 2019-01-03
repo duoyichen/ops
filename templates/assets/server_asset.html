@@ -42,7 +42,7 @@
           <table id="assets_table" class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                  <th>序号</th>
+                  <th>资产编码</th>
                   <th>类型</th>
                   <th>名称</th>
                   <th>管理IP</th>
@@ -58,7 +58,7 @@
 
                 {% for server in server_list %}
                     <tr>
-                        <td>{{ server.id }}</td>
+                        <td>{{ server.asset.asset_code }}</td>
                         <td>{{ server.get_sub_asset_type_display }}</td>
                         <td>{{ server.asset.name }}</td>
                         <td>{{ server.asset.manage_ip }}</td>
@@ -76,7 +76,7 @@
             </tbody>
             <tfoot>
             <tr>
-              <th>序号</th>
+              <th>资产编码</th>
               <th>类型</th>
               <th>名称</th>
               <th>管理IP</th>

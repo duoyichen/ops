@@ -42,7 +42,7 @@
           <table id="assets_table" class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                  <th>序号</th>
+                  <th>资产编码</th>
                   <th>类型</th>
                   <th>名称</th>
                   <th>管理IP</th>
@@ -57,7 +57,7 @@
             <tbody>
                 {% for network in network_obj %}
                     <tr>
-                        <td>{{ network.id }}</td>
+                        <td>{{ network.asset.asset_code }}</td>
                         <td>{{ network.get_sub_asset_type_display }}</td>
                         <td>{{ network.asset.name }}</td>
                         <td>{{ network.asset.manage_ip }}</td>
@@ -75,7 +75,7 @@
             </tbody>
             <tfoot>
             <tr>
-                  <th>序号</th>
+                  <th>资产编码</th>
                   <th>类型</th>
                   <th>名称</th>
                   <th>管理IP</th>

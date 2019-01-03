@@ -41,17 +41,16 @@
         <div class="box-body">
             <table id="ip_asset_detail_table" class="table table-bordered table-striped table-hover">
                 {% for ips in ips_obj %}
-                    <tr><td>ID：</td><td>{{ ips.id }}</td></tr>
-                    <tr><td>IP段：</td><td>{{ ips.name }}</td></tr>
-{#                    <tr><td>IP段：</td><td><a href="ip_asset_detail.html?id={{ ips.id }}">{{ ips.name }}</a></td></tr>#}
+                    <tr><td>资产编码：</td><td>{{ ips.asset.asset_code }}</td></tr>
+                    <tr><td>IP段：</td><td>{{ ips.asset.name }}</td></tr>
                     <tr><td>掩码：</td><td>{{ ips.netmask }}</td></tr>
                     <tr><td>开始IP：</td><td>{{ ips.first_ip }}</td></tr>
                     <tr><td>结束IP：</td><td>{{ ips.end_ip }}</td></tr>
                     <tr><td>已分配/总IP数：</td><td>7/254</td></tr>
-                    <tr><td>所在机房：</td><td>{{ ips.idc.name }}</td></tr>
-                    <tr><td>运营商：</td><td>{{ ips.manufacturer.name }}</td></tr>
-                    <tr><td>管理者：</td><td>{{ ips.admin.username }}</td></tr>
-                    <tr><td>更新时间：</td><td>{{ ips.m_time }}</td></tr>
+                    <tr><td>所在机房：</td><td>{{ ips.asset.idc.name }}</td></tr>
+                    <tr><td>运营商：</td><td>{{ ips.asset.manufacturer.name }}</td></tr>
+                    <tr><td>管理人：</td><td>{{ ips.asset.admin.username }}</td></tr>
+                    <tr><td>更新时间：</td><td>{{ ips.asset.m_time }}</td></tr>
                 {% empty %}
                     <tr>没有数据，请检查系统！</tr>
                 {% endfor %}
@@ -66,7 +65,7 @@
                 <hr>
                 <div class="box-header"><h3 class="box-title">该IP段的所有ip：</h3></div>
                 <div class="box-body">
-                    <table id="assets_table" class="table table-bordered table-striped">
+                    <table id="assets_table" class="table table-bordered table-striped table-hover">
                         <thead>
                             <tr>
                               <th>序号</th>
@@ -82,7 +81,7 @@
                                 <tr>
                                     <td>{{ i.id }}</td>
                                     <td>{{ i.ip }}</td>
-                                    <td>{{ i.ip_asset.name }}</td>
+                                    <td>{{ i.ip_asset.asset.name }}</td>
                                     <td>{{ i.get_status_display }}</td>
                                     <td>{{ i.customer }}</td>
                                     <td>分配该IP</td>

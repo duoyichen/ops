@@ -42,7 +42,7 @@
           <table id="assets_table" class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
-                  <th>序号</th>
+                  <th>资产编码</th>
                   <th>类型</th>
                   <th>设备名称</th>
                   <th>管理IP</th>
@@ -59,11 +59,13 @@
 
                 {% for asset in asset_list %}
                     <tr>
-                        <td>{{ asset.id }}</td>
+                        <td>{{ asset.asset_code }}</td>
                           {% if asset.asset_type == 'network_device' %}
                               <td class="text-green text-bold">{{ asset.get_asset_type_display  }}</td>
                           {% elif asset.asset_type == "server_device" %}
                               <td class="text-yellow text-bold">{{ asset.get_asset_type_display }}</td>
+                          {% elif asset.asset_type == "ip_device" %}
+                              <td class="text-red text-bold">{{ asset.get_asset_type_display }}</td>
                           {% elif asset.asset_type == "o_device" %}
                               <td class="text-blue text-bold">{{ asset.get_asset_type_display }}</td>
                           {% endif %}
@@ -90,7 +92,7 @@
             </tbody>
             <tfoot>
             <tr>
-              <th>序号</th>
+              <th>资产编码</th>
               <th>类型</th>
               <th>设备名称</th>
               <th>管理IP</th>

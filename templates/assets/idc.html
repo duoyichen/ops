@@ -39,7 +39,7 @@
         </div>
         <!-- /.box-header -->
         <div class="box-body">
-          <table id="assets_table" class="table table-bordered table-striped table-hover">
+          <table id="idc_table" class="table table-bordered table-striped table-hover">
             <thead>
                 <tr>
                   <th>序号</th>
@@ -64,7 +64,7 @@
                         <td>{{ idc.isp }}</td>
                         <td>{{ idc.city }}</td>
                         <td>{{ idc.address }}</td>
-                        <td>{{ idc.memo }}</td>
+                        <td>{{ idc.comment }}</td>
                         <td>删除  编辑</td>
                     </tr>
                 {% empty %}
@@ -108,12 +108,13 @@
     <script src="{% static 'plugins/fastclick/fastclick.js' %}"></script>
     <!-- AdminLTE App -->
     <script src="{% static 'dist/js/app.min.js' %}"></script>
+{#    <script src="{% static 'dist/js/adminlte.min.js' %}"></script>#}
     <!-- AdminLTE for demo purposes -->
     <script src="{% static 'dist/js/demo.js' %}"></script>
     <!-- page script -->
     <script>
       $(function () {
-        $('#assets_table').DataTable({
+        $('#idc_table').DataTable({
           "paging": true,       <!-- 允许分页 -->
           "lengthChange": true, <!-- 允许改变每页显示的行数 -->
           "searching": true,    <!-- 允许内容搜索 -->
