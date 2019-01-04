@@ -10,6 +10,7 @@ urlpatterns = [
     path('idc/', views.idc),
     path('network_asset/', views.network_asset),
     path('server_asset/', views.server_asset),
+    path('server_asset/<int:id>', views.server_asset_detail),
     path('ip_asset/', views.ip_asset),
     path('ip/', views.ip),
     path('add_ip_asset/', views.add_ip_asset),

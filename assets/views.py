@@ -32,6 +32,34 @@ def server_asset(request):
     server_list = models.Server_Asset.objects.all()
     return render(request,"assets/server_asset.html",locals())
 
+def server_asset_detail(request,id):
+    if request.method == 'GET':
+        id = id
+        server_obj = models.Server_Asset.objects.filter(id=id)
+        # obj = models.Server_Asset.objects.filter(id=id).values(
+        #     'id',
+        #     'sub_asset_type',
+        #     'model',
+        #     'os_type',
+        #     'os_distribution',
+        #     'os_release',
+        #     'asset__idc__name',
+        #     'asset__manufacturer__name',
+        #     'asset__admin__username',
+        #     'asset__name',
+        #     'asset__m_time',
+        #     'asset__status',
+        #     'asset__manage_ip',
+        #     'asset__asset_code',
+        # )
+        # print(server_obj[0].asset.id)
+        cpu_obj = models.CPU.objects.filter(asset__id=server_obj[0].asset.id)
+        ram_obj = models.RAM.objects.filter(asset__id=server_obj[0].asset.id)
+        # print(ram_obj)
+        disk_obj = models.Disk.objects.filter(asset__id=server_obj[0].asset.id)
+        nic_obj = models.NIC.objects.filter(asset__id=server_obj[0].asset.id)
+        return render(request,'assets/server_asset_detail.html',locals())
+
 def ip_asset(request):
     #ips_list = models.IP_Asset.objects.all().values('id','name','netmask','gateway_ip','first_ip','end_ip','m_time','admin_id__name','manufacturer_id__name')
     # ips_list = models.IP_Asset.objects.all().values('id','name','netmask','gateway_ip','first_ip','end_ip','m_time','admin__username','idc__name','manufacturer__name')

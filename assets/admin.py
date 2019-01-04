@@ -3,8 +3,14 @@ from . import models
 from . import asset_handler
 
 
+# class MyAdminSite(admin.AdminSite):
+#     site_header = 'Operation Platform Backend'
+#     site_title = 'Operation Platform'
+#
+# admin_site = MyAdminSite(name='admin')
+
 class AssetAdmin(admin.ModelAdmin):
-    list_display = ['asset_type', 'name', 'status', 'c_time', "m_time"]
+    list_display = ['asset_type', 'asset_code', 'name', 'status', 'manufacturer', 'idc', 'admin', 'c_time', "m_time"]
 
 class NewAssetAdmin(admin.ModelAdmin):
     list_display = ['asset_type', 'sn', 'asset_code', 'owner', 'idc', 'manage_ip', 'model', 'manufacturer', 'c_time', 'm_time']
@@ -26,6 +32,7 @@ class NewAssetAdmin(admin.ModelAdmin):
         self.message_user(request, "成功批准  %s  条新资产上线！" % success_upline_number)
     approve_selected_new_assets.short_description = "批准选择的新资产"
 
+
 admin.site.register(models.Asset, AssetAdmin)
 admin.site.register(models.BusinessUnit)
 admin.site.register(models.depart)
@@ -43,3 +50,6 @@ admin.site.register(models.Network_Asset)
 admin.site.register(models.Server_Asset)
 admin.site.register(models.Tag)
 admin.site.register(models.NewAssetApprovalZone, NewAssetAdmin)
+
+admin.site.site_header = 'Operation Platform'
+admin.site.site_title = 'Operation Platform'

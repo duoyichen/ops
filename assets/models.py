@@ -26,9 +26,9 @@ class Asset(models.Model):
     manufacturer = models.ForeignKey('Manufacturer', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='厂商')
     status = models.SmallIntegerField(choices=asset_status, default=0, verbose_name='设备状态')
     # business_unit = models.ForeignKey('BusinessUnit', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='所属业务线')
-    idc = models.ForeignKey('IDC', null=True, blank=True, on_delete=models.CASCADE, verbose_name='所在机房')
+    idc = models.ForeignKey('IDC', null=True, blank=True, on_delete=models.CASCADE, verbose_name='所属机房')
     tag = models.ManyToManyField('Tag', blank=True, verbose_name='标签')
-    admin = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='资产管理员', related_name='admin_asset')
+    admin = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='管理人', related_name='admin_asset')
     # approved_by = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='批准人', related_name='approved_by_asset')
 
     comment = models.TextField(null=True, blank=True, verbose_name='备注')

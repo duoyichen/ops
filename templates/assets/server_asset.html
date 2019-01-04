@@ -37,6 +37,9 @@
         <div class="box-header">
           <h3 class="box-title">服务器表<small>(Server)</small></h3>
         </div>
+        <div class="box-header">
+          <h3 class="box-title">服务器表<small>(Server)</small></h3>
+        </div>
         <!-- /.box-header -->
         <div class="box-body">
           <table id="assets_table" class="table table-bordered table-striped table-hover">
@@ -60,7 +63,7 @@
                     <tr>
                         <td>{{ server.asset.asset_code }}</td>
                         <td>{{ server.get_sub_asset_type_display }}</td>
-                        <td>{{ server.asset.name }}</td>
+                        <td><a href="../server_asset/{{ server.id }}">{{ server.asset.name }}</a></td>
                         <td>{{ server.asset.manage_ip }}</td>
                         <td>{{ server.model }}</td>
                         <td>{{ server.os_release }}-{{ server.os_distribution }}</td>
@@ -90,6 +93,40 @@
             </tfoot>
           </table>
         </div>
+
+
+      <div>
+          <br><br>
+          请下载客户端采集脚本：<br><br>
+          <a href="/static/upload/client.rar" class="btn btn-primary btn-lg active" role="button">客户端采集脚本</a>
+          <br><br>
+          使用方法：<br>
+          下载压缩包，解压，直接运行：<br>
+          python main.py report_data
+
+          <br><br>
+          Windows系统需要安装Python环境，可以去 <a href="https://www.python.org/downloads/" target="_blank">官网</a> 下载对应的版本，或者直接下载资源站上面的安装包：
+          <br>
+          <a href="http://122.11.59.131/o/s/py/" target="_blank">http://122.11.59.131/o/s/py/</a>
+
+          <br><br>
+          python环境的安装可以参考博客：
+          <br>
+          <a href="https://www.cnblogs.com/duoyi/articles/7904634.html" target="_blank">https://www.cnblogs.com/duoyi/articles/7904634.html</a>
+          <br>
+          安装的时候记得：1. 一定要选中 “Add Python 3.6 to PATH” 的复选框，可以自动将 python 安装目录添加到系统的环境变量；2. 选中 "pip" 前面的复选框，安装过程会顺便把 pip 模块也装上，免得我们自己手动去安装。
+
+          <br><br>
+          然后安装 wmi，pypiwin32 两个模块，打开 cmd 命令窗口，执行下面的命令：
+          <br>
+          pip install wmi
+          <br>
+          pip install pypiwin32
+
+      </div>
+
+
+
         <!-- /.box-body -->
       </div>
       <!-- /.box -->
