@@ -86,10 +86,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'ops',
-        'HOST': '127.0.0.1',
+        'HOST': 'localhost',
         'PORT': '3306',
-        'USER': 'root',
-        'PASSWORD': 'Mysql_Root_Pass',
+        'USER': 'ops_db_user',
+        'PASSWORD': 'ops_db_pass',
     }
 }
 
