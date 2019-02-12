@@ -17,6 +17,9 @@ urlpatterns = [
     path('del_ip_asset.html', views.del_ip_asset),
     path('ip_asset_detail.html', views.ip_asset_detail),
     path('add_ip.html', views.add_ip),
+    path('port/', views.port),
+    path('add_port/', views.add_port),
+    # For AutoCollect
     path('report/', views.report, name='report'),
 
     path('employee/', views.employee),

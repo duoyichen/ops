@@ -19,8 +19,8 @@ from assets import views
 
 
 urlpatterns = [
+    path('', views.index),
     path('admin/', admin.site.urls),
     path('assets/', include("assets.urls"),name='assets'),
-    path('', include("assets.urls")),
-    # path('', views.index),
+    path('monitor/', include("monitor.urls"),name='monitor'),
 ]

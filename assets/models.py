@@ -20,7 +20,7 @@ class Asset(models.Model):
     )
 
     asset_type = models.CharField(choices=asset_type_choice, max_length=64, default='network_device', verbose_name="资产类型")
-    name = models.CharField(max_length=64, unique=True, verbose_name="资产名称")
+    name = models.CharField(max_length=64, unique=True, verbose_name="设备名称")
     asset_code = models.CharField(max_length=128, unique=True, verbose_name="资产编码")
     manage_ip = models.GenericIPAddressField(null=True, blank=True, verbose_name='管理IP')
     manufacturer = models.ForeignKey('Manufacturer', null=True, blank=True, on_delete=models.SET_NULL, verbose_name='厂商')
@@ -36,14 +36,15 @@ class Asset(models.Model):
     m_time = models.DateTimeField(auto_now=True, verbose_name='更新日期')
 
     def __str__(self):
-        return '<%s>  %s' % (self.get_asset_type_display(), self.name)
+        # return '<%s>  %s' % (self.get_asset_type_display(), self.name)
+        return self.name
 
     class Meta:
         verbose_name = '资产总表'
         verbose_name_plural = "资产总表"
         ordering = ['-c_time']
 
-class Network_Asset(models.Model):
+class NetworkAsset(models.Model):
     """网络设备"""
     sub_asset_type_choice = (
         (0, '交换机'),
@@ -54,8 +55,8 @@ class Network_Asset(models.Model):
 
     asset = models.OneToOneField('Asset', on_delete=models.CASCADE)
     sn = models.CharField(max_length=128, unique=True, verbose_name="资产序列号")  # 不可重复
-    owner = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='所有者',
-                              related_name='owner_network')
+    admin = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='管理人',
+                              related_name='admin_network')
     model = models.CharField(max_length=128, null=True, blank=True, verbose_name="设备型号")
     port_num = models.SmallIntegerField(null=True, blank=True, verbose_name="端口个数")
     dev_conf = models.TextField(null=True, blank=True, verbose_name="设备配置")
@@ -71,7 +72,7 @@ class Network_Asset(models.Model):
         verbose_name = '网络设备'
         verbose_name_plural = "网络设备"
 
-class Server_Asset(models.Model):
+class ServerAsset(models.Model):
     """服务器设备"""
     sub_asset_type_choice = (
         (0, '机架式服务器'),
@@ -87,8 +88,8 @@ class Server_Asset(models.Model):
 
     asset = models.OneToOneField('Asset', on_delete=models.CASCADE)
     sn = models.CharField(max_length=128, unique=True, verbose_name="资产序列号")
-    owner = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='所有者',
-                              related_name='owner_server')
+    admin = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='管理人',
+                              related_name='admin_server')
     model = models.CharField(max_length=128, null=True, blank=True, verbose_name='服务器型号')
     os_type = models.CharField('操作系统类型', max_length=64, blank=True, null=True)
     os_distribution = models.CharField('发行版本', max_length=64, blank=True, null=True)
@@ -110,9 +111,10 @@ class Server_Asset(models.Model):
 class IDC(models.Model):
     """机房"""
     name = models.CharField(max_length=64, unique=True, verbose_name="机房名称")
-    sw_core = models.CharField(max_length=64, verbose_name="核心交换机")
+    sw_core = models.ForeignKey('Asset', null=True, blank=True, on_delete=models.SET_NULL, verbose_name="核心交换机", related_name='idc_core_sw')
     bandwidth = models.PositiveIntegerField(verbose_name="带宽")
-    isp = models.CharField(max_length=64,verbose_name="ISP服务商")
+    manufacturer = models.ForeignKey('Manufacturer', null=True, blank=True, on_delete=models.SET_NULL,
+                                     verbose_name="ISP服务商")
     city = models.CharField(max_length=32,verbose_name="城市")
     address = models.CharField(max_length=128,verbose_name="机房地址")
     comment = models.CharField(max_length=128, blank=True, null=True, verbose_name='备注')
@@ -124,7 +126,7 @@ class IDC(models.Model):
         verbose_name = '机房'
         verbose_name_plural = "机房"
 
-class IP_Asset(models.Model):
+class IPAsset(models.Model):
     asset_status_choice = (
         (0, '已分配'),
         (1, '未分配'),
@@ -153,7 +155,7 @@ class IP(models.Model):
     )
 
     ip = models.GenericIPAddressField(null=True, blank=True, unique=True, verbose_name='IP')
-    ip_asset = models.ForeignKey('IP_Asset', null=True, blank=True, on_delete=models.CASCADE,verbose_name='所属IP段',related_name='ips_ip')
+    ip_asset = models.ForeignKey('IPAsset', null=True, blank=True, on_delete=models.CASCADE,verbose_name='所属IP段',related_name='ips_ip')
     status = models.SmallIntegerField(choices=asset_status, default=0, verbose_name='IP状态')
     customer = models.CharField(null=True, blank=True, max_length=64, verbose_name="客户名称")
     comment = models.TextField(null=True, blank=True, verbose_name='备注')
@@ -166,6 +168,32 @@ class IP(models.Model):
         verbose_name_plural = "IP表"
         ordering = ['-ip']
 
+
+class Port(models.Model):
+    """    所有网络设备port数据表    """
+    asset_status = (
+        (0, '未分配'),
+        (1, '已分配'),
+        (2, '未知'),
+    )
+
+    port = models.ForeignKey('NetworkAsset', null=True, blank=True, on_delete=models.CASCADE,verbose_name='所属设备',related_name='port_networkasset')
+    port_name = models.CharField(null=True, blank=True, max_length=64, verbose_name="端口名称")
+    ip = models.GenericIPAddressField(null=True, blank=True, unique=True, verbose_name='端口IP')
+    limit_in_speed = models.PositiveIntegerField(null=True, blank=True, verbose_name="入限速")
+    limit_out_speed = models.PositiveIntegerField(null=True, blank=True, verbose_name="出限速")
+    status = models.SmallIntegerField(choices=asset_status, default=0, verbose_name='端口状态')
+    admin = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='管理人',
+                              related_name='admin_port')
+    comment = models.TextField(null=True, blank=True, verbose_name='备注')
+
+    def __str__(self):
+        return '%s-%s' % (self.port_name,self.ip)
+
+    class Meta:
+        verbose_name = '端口表'
+        verbose_name_plural = "端口表"
+        ordering = ['-port_name']
 
 class CPU(models.Model):
     """CPU组件"""
@@ -329,7 +357,7 @@ class NewAssetApprovalZone(models.Model):
     asset_type = models.CharField(choices=asset_type_choice, default='server', max_length=64, blank=True, null=True,
                                   verbose_name='资产类型')
     asset_code = models.CharField(max_length=128, null=True, blank=True, verbose_name="资产编码")
-    owner = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='所有者',)
+    admin = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, verbose_name='管理人',)
     manufacturer = models.CharField(max_length=64, blank=True, null=True, verbose_name='生产厂商')
     manage_ip = models.GenericIPAddressField(null=True, blank=True, verbose_name='管理IP')
     idc = models.ForeignKey('IDC', null=True, blank=True, on_delete=models.CASCADE, verbose_name='所在机房')

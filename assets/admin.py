@@ -13,7 +13,7 @@ class AssetAdmin(admin.ModelAdmin):
     list_display = ['asset_type', 'asset_code', 'name', 'status', 'manufacturer', 'idc', 'admin', 'c_time', "m_time"]
 
 class NewAssetAdmin(admin.ModelAdmin):
-    list_display = ['asset_type', 'sn', 'asset_code', 'owner', 'idc', 'manage_ip', 'model', 'manufacturer', 'c_time', 'm_time']
+    list_display = ['asset_type', 'sn', 'asset_code', 'admin', 'idc', 'manage_ip', 'model', 'manufacturer', 'c_time', 'm_time']
     list_filter = ['asset_type', 'manufacturer', 'c_time']
     search_fields = ('sn',)
 
@@ -40,14 +40,15 @@ admin.site.register(models.empployee)
 admin.site.register(models.EventLog)
 admin.site.register(models.IDC)
 admin.site.register(models.IP)
+admin.site.register(models.Port)
 admin.site.register(models.CPU)
 admin.site.register(models.Disk)
 admin.site.register(models.RAM)
 admin.site.register(models.NIC)
-admin.site.register(models.IP_Asset)
+admin.site.register(models.IPAsset)
 admin.site.register(models.Manufacturer)
-admin.site.register(models.Network_Asset)
-admin.site.register(models.Server_Asset)
+admin.site.register(models.NetworkAsset)
+admin.site.register(models.ServerAsset)
 admin.site.register(models.Tag)
 admin.site.register(models.NewAssetApprovalZone, NewAssetAdmin)
 

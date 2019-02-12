@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}Port表{% endblock %}
+
+{% block css %}
+
+<!-- DataTables -->
+  <link rel="stylesheet" href="{% static 'plugins/datatables/dataTables.bootstrap.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/AdminLTE.min.css' %}">
+  <!-- AdminLTE Skins. Choose a skin from the css/skins
+       folder instead of downloading all of them to reduce the load. -->
+  <link rel="stylesheet" href="{% static 'dist/css/skins/_all-skins.min.css' %}">
+
+{% endblock %}
+
+{% block content %}
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <h1>
+        Port表
+        <small>port list</small>
+      </h1>
+      <ol class="breadcrumb">
+        <li><a href="#"><i class="fa fa-dashboard"></i> 主页</a></li>
+        <li class="active">Port表</li>
+      </ol>
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+    <div class="row">
+    <div class="col-xs-12">
+
+      <div class="box">
+        <div class="box-header">
+          <h3 class="box-title">port表<small>(port)</small></h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <table id="assets_table" class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                  <th>所属机房</th>
+                  <th>交换机IP</th>
+                  <th>物理端口</th>
+                  <th>端口网路</th>
+                  <th>管理人</th>
+                  <th>入限速</th>
+                  <th>出限速</th>
+                  <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in port_obj %}
+                    <tr>
+                        <td>{{ i.port.asset.idc }}</td>
+                        <td>{{ i.port.asset.manage_ip }}</td>
+                        <td>{{ i.port_name }}</td>
+                        <td>{{ i.port_name }}</td>
+                        <td>{{ i.admin }}</td>
+                        <td>{{ i.limit_in_speed }}</td>
+                        <td>{{ i.limit_out_speed }}</td>
+                        <td>编辑</td>
+                    </tr>
+                {% empty %}
+                  <tr>没有数据！</tr>
+                {% endfor %}
+
+            </tbody>
+            <tfoot>
+            <tr>
+                  <th>所属机房</th>
+                  <th>交换机IP</th>
+                  <th>物理端口</th>
+                  <th>端口网路</th>
+                  <th>管理人</th>
+                  <th>入限速</th>
+                  <th>出限速</th>
+                  <th>操作</th>
+            </tr>
+            </tfoot>
+          </table>
+        </div>
+        <!-- /.box-body -->
+      </div>
+      <!-- /.box -->
+    </div>
+    <!-- /.col -->
+    </div>
+    <!-- /.row -->
+    </section>
+
+{% endblock %}
+
+{% block script %}
+    <!-- DataTables -->
+    <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'plugins/datatables/dataTables.bootstrap.min.js' %}"></script>
+    <!-- AdminLTE App -->
+    <script src="{% static 'dist/js/app.min.js' %}"></script>
+    <!-- AdminLTE for demo purposes -->
+    <script src="{% static 'dist/js/demo.js' %}"></script>
+    <!-- page script -->
+    <script>
+      $(function () {
+        $('#assets_table').DataTable({
+          "paging": true,       <!-- 允许分页 -->
+          "lengthChange": true, <!-- 允许改变每页显示的行数 -->
+          "searching": true,    <!-- 允许内容搜索 -->
+          "ordering": true,     <!-- 允许排序 -->
+          "info": true,         <!-- 显示信息 -->
+          "autoWidth": false    <!-- 固定宽度 -->
+        });
+      });
+    </script>
+{% endblock %}

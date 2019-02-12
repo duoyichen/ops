@@ -1,7 +1,9 @@
-from django.shortcuts import render,HttpResponse,redirect
+from django.shortcuts import render,redirect
+from django.http import HttpResponse,JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 #import json
 from assets import models
+from assets.python_snmp import *
 
 
 def index(request):
@@ -18,7 +20,7 @@ def idc(request):
 
 def network_asset(request):
     #network_list = models.Network_asset.objects.all().values('id','sub_asset_type','model','asset__hostname','asset__manage_ip','asset__admin__username','asset__idc__name','asset__manufacturer__name','asset__m_time')
-    network_obj = models.Network_Asset.objects.all()
+    network_obj = models.NetworkAsset.objects.all()
     # # print(network_list)
     # # print(type(network_list))
     # print(network_obj)
@@ -29,13 +31,13 @@ def network_asset(request):
     return render(request,"assets/network_asset.html",locals())
 
 def server_asset(request):
-    server_list = models.Server_Asset.objects.all()
+    server_list = models.ServerAsset.objects.all()
     return render(request,"assets/server_asset.html",locals())
 
 def server_asset_detail(request,id):
     if request.method == 'GET':
         id = id
-        server_obj = models.Server_Asset.objects.filter(id=id)
+        server_obj = models.ServerAsset.objects.filter(id=id)
         # obj = models.Server_Asset.objects.filter(id=id).values(
         #     'id',
         #     'sub_asset_type',
@@ -63,14 +65,14 @@ def server_asset_detail(request,id):
 def ip_asset(request):
     #ips_list = models.IP_Asset.objects.all().values('id','name','netmask','gateway_ip','first_ip','end_ip','m_time','admin_id__name','manufacturer_id__name')
     # ips_list = models.IP_Asset.objects.all().values('id','name','netmask','gateway_ip','first_ip','end_ip','m_time','admin__username','idc__name','manufacturer__name')
-    ips_obj = models.IP_Asset.objects.all()
+    ips_obj = models.IPAsset.objects.all()
     # print(ips_obj)
     return render(request,"assets/ip_asset.html",locals())
 
 def ip_asset_detail(request):
     if request.method == 'GET':
         id = request.GET.get('id')
-        ips_obj = models.IP_Asset.objects.filter(id=id)
+        ips_obj = models.IPAsset.objects.filter(id=id)
         print(ips_obj[0].id)
         ip_obj = models.IP.objects.filter(ip_asset=ips_obj[0].id)
         print(ip_obj)
@@ -165,8 +167,8 @@ def add_ip_asset(request):
         obj = ip_asset_form(request.POST)
         if obj.is_valid():
             models.Asset.objects.create(asset_type=2)
-            models.IP_Asset.objects.create(**obj.cleaned_data[''])
-            ips_obj = models.IP_Asset.objects.filter(name=obj.cleaned_data['name'])
+            models.IPAsset.objects.create(**obj.cleaned_data[''])
+            ips_obj = models.IPAsset.objects.filter(name=obj.cleaned_data['name'])
             # print(ips_obj,type(ips_obj))
             # return redirect(request, '/assets/ip_asset/')
             # return redirect(request, 'assets/ip_asset_detail.html')
@@ -181,13 +183,13 @@ def del_ip_asset(request):
     if request.method == 'GET':
         id = request.GET.get('id')
         # print(id)
-        models.IP_Asset.objects.filter(id=id).delete()
+        models.IPAsset.objects.filter(id=id).delete()
         return redirect('/assets/ip_asset/')
 
 def ip(request):
     if request.method == 'GET':
         ip_obj = models.IP.objects.all()
-    return render(request,"assets/ip.html",locals())
+        return render(request,"assets/ip.html",locals())
 
 def ip2num(ip_add):
     lp = [int(x) for x in ip_add.split('.')]
@@ -204,7 +206,7 @@ def num2ip(num):
 def add_ip(request):
     id = request.GET.get('id')
     print(id)
-    ips_obj = models.IP_Asset.objects.filter(id=id)
+    ips_obj = models.IPAsset.objects.filter(id=id)
     first_ip = ips_obj[0].first_ip
     end_ip = ips_obj[0].end_ip
     ip_asset = ips_obj[0].id
@@ -229,6 +231,72 @@ def add_ip(request):
     # return render(request,'assets/ip_asset_detail.html',locals())
     # return HttpResponse("ok")
     return redirect('/assets/ip/')
+
+def add_port(request):
+    if request.method == 'GET':
+        sysName  = "1.3.6.1.2.1.1.5"
+        ifNumber = "1.3.6.1.2.1.2.1"
+        ifDescr = "1.3.6.1.2.1.2.2.1.2"
+        commu = 'ewcache-55667'
+        ip_list = []
+        network_assets = models.NetworkAsset.objects.all()
+        for i in network_assets:
+            # print(i.asset.manage_ip)
+            ip_list.append(i.asset.manage_ip)
+
+        snmp_inst = GetSnmp()
+
+        #生成list
+        oid_list = snmp_inst.make_list(
+            # sysName,
+            # ifNumber,
+            ifDescr,
+        )
+        #获取设备 snmp 相关信息
+        info = snmp_inst.get_info(ip_list, commu, oid_list,)
+        # print(type(info))
+        for k,v in info.items():
+            # k 就是 ip
+            print(k, ':')
+            network_obj = models.NetworkAsset.objects.filter(asset__manage_ip = k)[0]
+            user_obj = models.User.objects.filter(username = 'admin')
+            # print(network_obj)
+            for k2,v2 in v.items():
+                # print('    ', k2)
+                # 判断 k2 是不是等于 ifDescr 的 oid
+                if k2 == '1.3.6.1.2.1.2.2.1.2':
+                    for k3,v3 in v2.items():
+                        print('        ', k3)
+                        print('            ', v3)
+                        # v3 就是端口名称
+                        # port_name = v3
+                        # print('    ', network_obj[0], port_name)
+                        models.Port.objects.create(port = network_obj, port_name = v3, admin = user_obj[0])
+                else:
+                    for i in v2:
+                        print('        ', i)
+        return redirect('/assets/port/')
+        # return HttpResponse(info)
+        # print(JsonResponse(info))
+        # print(json.dumps(info,indent=4))
+        # return JsonResponse(info)
+    else:
+        return HttpResponse('This API just for GET method!')
+
+def port(request):
+    if request.method == 'GET':
+        port_obj = models.Port.objects.all()
+        # print(port_obj[0].port.asset.idc)
+        # print(port_obj[0].port.asset.manage_ip)
+        # print(port_obj[0].port_name)
+        # print(port_obj[0].ip)
+        # print(port_obj[0].limit_in_speed)
+        # print(port_obj[0].limit_out_speed)
+        # print(port_obj[0].status)
+        # print(port_obj[0].admin)
+        # print(port_obj[0].comment)
+        # print(port_obj[0])
+        return render(request, "assets/port.html", locals())
 
 
 # @csrf_exempt
@@ -275,6 +343,8 @@ def report(request):
                 return HttpResponse(response)
         else:
             return HttpResponse("没有资产sn序列号，请检查数据！")
+    else:
+        return HttpResponse('This API just for AutoCollect!')
 
 
 
