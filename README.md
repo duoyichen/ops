@@ -6,4 +6,4 @@
 
 
 * 开发环境：Windows10 + Python3.5 + PyCharm5
-* 项目架构：Python3.5 + sqlite3 + Django2.1 + AdminLTE
+* 项目架构：Python3.7 + sqlite3 + Django2.1 + AdminLTE
